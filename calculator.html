@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+</head>
+
+<style>
+    body {
+        font-family: sans-serif;
+        font-weight: bold;
+        font-size: 25px;      
+    }
+    .calc {
+        padding: 10px;
+        width: 329px;
+        background-color: #303030;
+    }
+    .display {
+        background-color: whitesmoke;
+        height: 100px;
+        width: 100%;
+        border: 1px black solid;
+        border-radius: 5px;
+        margin-bottom: 3px;
+        text-align: end;
+        font-size: 40px;
+    }
+    .container{
+        display: inline-grid;
+        grid-template-columns: repeat(4,80px);
+        grid-template-rows: repeat(5,80px);
+        gap:3px; 
+    }
+    .container>div {
+        border: 1px black solid; 
+        border-radius: 5px;
+        text-align: center;
+    }
+
+    [data-key="0"] {
+        grid-column-start: 1;
+        grid-column-end: 3;
+    }
+
+    [data-key="="]  {
+        grid-column-start: 2;
+        grid-column-end: 5;
+    }
+
+    .key.number {
+        background-color: whitesmoke;
+    }
+
+    .key.operator,
+    .key.equal {
+        background-color:bisque;
+    } 
+
+    .key.clear {
+        background-color: gray;
+    }
+
+    .shadow {
+        box-shadow: inset 0px 1px 8px 0px rgba(0,0,0,0.5);
+    }
+  
+</style>
+<body>
+    <div class="calc">
+        <div class="display">0</div>
+        <div class="container">
+            <div class="key number" data-key="7">7</div>
+            <div class="key number" data-key="8">8</div>
+            <div class="key number" data-key="9">9</div>
+            <div class="key operator" data-key="/">/</div>
+
+            <div class="key number" data-key="4">4</div>
+            <div class="key number" data-key="5">5</div>
+            <div class="key number" data-key="6">6</div>
+            <div class="key operator" data-key="*">*</div>
+
+            <div class="key number" data-key="1">1</div>
+            <div class="key number" data-key="2">2</div>
+            <div class="key number" data-key="3">3</div>
+            <div class="key operator" data-key="-">-</div>
+
+            <div class="key number" data-key="0">0</div>
+            <div class="key number" data-key=".">.</div>
+            <div class="key operator" data-key="+">+</div>
+
+            <div class="key clear" data-key="c">C</div>
+            <div class="key equal" data-key="=">=</div>
+        </div>
+    </div>
+    
+<script>
+    const display=document.querySelector('.display');
+    const keys=document.querySelectorAll('.key');
+    const equal=document.querySelector('.equal');
+    const clear=document.querySelector('.clear');
+
+    function operateThis(request) {
+        if (request.includes("+")){
+            return add(request);
+        } else if (request.includes("-")){
+            return subtract(request);
+        } else if (request.includes("*")){
+            return multiply(request);
+        } else if (request.includes("/")){
+            return divide(request);
+        } else {
+            return request;
+        }
+    }
+    function add(request){
+        const [number1, number2]=request.split("+");
+        return (parseFloat(number1)+parseFloat(number2)); 
+    }
+
+    function subtract(request){
+        const [number1, number2]=request.split("-");
+        return (parseFloat(number1)-parseFloat(number2));
+    }
+
+    function multiply(request){
+        const [number1, number2]=request.split("*");
+        return (parseFloat(number1)*parseFloat(number2));
+    }
+
+    function divide(request){
+        const [number1, number2]=request.split("/");
+        return (parseFloat(number1)/parseFloat(number2));
+    }
+
+    function strip(astring){
+        return astring.replace(/^0/,'');
+
+    }
+
+    function check() {
+        if (this.dataset.key=='c'){
+            display.textContent='0';
+        } else if (this.dataset.key=='='){
+            x=operateThis(display.textContent);
+            if  (x.toString().includes(".")) {
+                display.textContent=x.toFixed(2);
+            } else {
+                display.textContent=x;
+            }
+        } else {
+            let string=strip(display.textContent);
+            string+=this.dataset.key;
+            display.textContent=`${string}`
+        }
+    }
+
+    keys.forEach(key=>key.addEventListener('mouseover',function(){
+        key.classList.add('shadow'); 
+    }));
+
+    keys.forEach(key=>key.addEventListener('mouseout',function(){
+        key.classList.remove('shadow');
+    }));
+
+    keys.forEach(key=> key.addEventListener('click',check))
+</script>
+</body>
+</html>
